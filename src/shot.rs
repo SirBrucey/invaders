@@ -5,9 +5,9 @@ use rusty_time::Timer;
 use crate::frame::Drawable;
 
 pub struct Shot {
-    x: usize,
-    y: usize,
-    exploding: bool,
+    pub x: usize,
+    pub y: usize,
+    pub exploding: bool,
     timer: Timer,
 }
 
