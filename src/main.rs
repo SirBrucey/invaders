@@ -14,6 +14,7 @@ use crossterm::{
 };
 use invaders::{
     frame::{self, new_frame, Drawable},
+    invaders::Invaders,
     player::Player,
     render,
 };
@@ -54,6 +55,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Game loop
     let mut player = Player::new();
     let mut instant = Instant::now();
+    let mut invaders = Invaders::new();
+
     'gameloop: loop {
         // Per-frame init
         let delta = instant.elapsed();
@@ -83,9 +86,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // Updates
         player.update(delta);
+        if invaders.update(delta) {
+            audio.play("move");
+        }
 
         // Draw and Render
-        player.draw(&mut cur_frame);
+        let drawables: Vec<&dyn Drawable> = vec![&player, &invaders];
+        for drawable in drawables.iter() {
+            drawable.draw(&mut cur_frame);
+        }
         let _ = render_tx.send(cur_frame);
         thread::sleep(Duration::from_millis(1));
     }
